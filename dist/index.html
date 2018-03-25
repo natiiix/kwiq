@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+</head>
+
+<body>
+    <div class="box">
+        <textarea id="code" spellcheck="false" autofocus></textarea>
+        <textarea id="console" spellcheck="false" readonly></textarea>
+    </div>
+</body>
+
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        border: 0;
+
+        height: 100%;
+    }
+
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+    }
+
+    #code,
+    #console {
+        margin: 0;
+        padding: 0.5em;
+        border: 0;
+
+        box-sizing: border-box;
+
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    #code {
+        flex: 3;
+        resize: none;
+
+        background-color: #1E1E1E;
+        color: #D4D4D4;
+    }
+
+    #console {
+        flex: 1;
+        resize: none;
+
+        background-color: #CCC;
+        color: #222;
+    }
+</style>
+
+<script src="bundle.js"></script>
+
+</html>
