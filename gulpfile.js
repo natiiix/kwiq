@@ -2,7 +2,7 @@ var gulp = require("gulp");
 var del = require("del");
 var browserify = require("browserify");
 var source = require("vinyl-source-stream");
-var watchify = require("watchify");
+// var watchify = require("watchify");
 var tsify = require("tsify");
 var uglify = require('gulp-uglify');
 var gutil = require("gulp-util");
@@ -13,13 +13,13 @@ var paths = {
     pages: ["src/*.html"]
 };
 
-var watchedBrowserify = watchify(browserify({
-    basedir: '.',
-    debug: true,
-    entries: ['src/main.ts'],
-    cache: {},
-    packageCache: {}
-}).plugin(tsify));
+// var watchedBrowserify = watchify(browserify({
+//     basedir: '.',
+//     debug: true,
+//     entries: ['src/main.ts'],
+//     cache: {},
+//     packageCache: {}
+// }).plugin(tsify));
 
 gulp.task("clean", function () {
     return del("dist/*");
@@ -31,7 +31,14 @@ gulp.task("copy-html", ["clean"], function () {
 });
 
 function bundle() {
-    return watchedBrowserify
+    // return watchedBrowserify
+    return browserify({
+            basedir: '.',
+            debug: true,
+            entries: ['src/main.ts'],
+            cache: {},
+            packageCache: {}
+        })
         .plugin(tsify)
         .transform('babelify', {
             presets: ['es2015'],
@@ -49,5 +56,5 @@ function bundle() {
 }
 
 gulp.task("default", ["copy-html"], bundle);
-watchedBrowserify.on("update", bundle);
-watchedBrowserify.on("log", gutil.log);
+//watchedBrowserify.on("update", bundle);
+//watchedBrowserify.on("log", gutil.log);
