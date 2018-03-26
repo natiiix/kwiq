@@ -1,14 +1,15 @@
-import { Interpreter } from "./interpreter";
-import { keyCodes } from "./keyCodes";
+import { Interpreter } from "./Interpreter";
+import { KeyCode } from "./KeyCode";
 
 const elemCode: HTMLTextAreaElement = document.getElementById("code") as HTMLTextAreaElement;
 const elemConsole: HTMLTextAreaElement = document.getElementById("console") as HTMLTextAreaElement;
 const elemSaveButton: HTMLElement = document.getElementById("buttonSave");
 
 const keyStates: { [id: number]: boolean } = {};
+let interpreterReady: boolean = true;
 
-function isKeyDown(keyCode: number): boolean {
-    const keyState: undefined | boolean = keyStates[keyCode];
+function isKeyDown(key: number): boolean {
+    const keyState: undefined | boolean = keyStates[key];
     return typeof keyState !== undefined && keyState;
 }
 
@@ -16,8 +17,8 @@ function getKeyCode(e: KeyboardEvent): number {
     return e.which || e.keyCode;
 }
 
-function hasKeyCode(e: KeyboardEvent, keyCode: number): boolean {
-    return getKeyCode(e) === keyCode;
+function hasKeyCode(e: KeyboardEvent, key: number): boolean {
+    return getKeyCode(e) === key;
 }
 
 function appendConsole(text: string): void {
@@ -31,36 +32,50 @@ function appendConsole(text: string): void {
 }
 
 function interpretAsync(code: string, cbLog: (text: string) => void): void {
-    (new Promise((resolve: () => void, reject: () => void): void => {
+    if (!interpreterReady) {
+        alert("Interpreter is currently busy!");
+        return;
+    }
+
+    const interpretation: Promise<void> = new Promise((resolve: () => void, reject: (err: Error) => void): void => {
         appendConsole("Interpreting...");
+        interpreterReady = false;
 
         try {
             (new Interpreter()).interpret(code, cbLog);
             resolve();
-        } catch {
-            reject();
+        } catch (err) {
+            reject(err);
         }
-    }))
-        .then(() => cbLog("Done!"))
-        .catch(() => cbLog("Error!"));
+    });
+
+    interpretation
+        .then(() => {
+            cbLog("Done!");
+            interpreterReady = true;
+        })
+        .catch((err: Error) => {
+            cbLog(`Error: ${err.name}\nMessage: ${err.message}\nStack Trace: ${err.stack}`);
+            interpreterReady = true;
+        });
 }
 
 elemCode.addEventListener("keydown", (e: KeyboardEvent): void => {
-    if (hasKeyCode(e, keyCodes.F5)) {
+    if (hasKeyCode(e, KeyCode.F5)) {
         e.preventDefault();
 
-        if (!isKeyDown(keyCodes.F5)) {
+        if (!isKeyDown(KeyCode.F5)) {
             interpretAsync(elemCode.value, appendConsole);
         }
-    } else if (hasKeyCode(e, keyCodes.KEY_S)) {
+    } else if (hasKeyCode(e, KeyCode.KEY_S)) {
         if (e.ctrlKey) {
             e.preventDefault();
 
-            if (!isKeyDown(keyCodes.KEY_S)) {
+            if (!isKeyDown(KeyCode.KEY_S)) {
                 elemSaveButton.click();
             }
         }
-    } else if (hasKeyCode(e, keyCodes.TAB)) {
+    } else if (hasKeyCode(e, KeyCode.TAB)) {
         e.preventDefault();
 
         const tabValue: string = "    ";
@@ -77,7 +92,7 @@ elemCode.addEventListener("keydown", (e: KeyboardEvent): void => {
 });
 
 elemCode.addEventListener("keyup", (e: KeyboardEvent): void => {
-    if (hasKeyCode(e, keyCodes.F5)) {
+    if (hasKeyCode(e, KeyCode.F5)) {
         e.preventDefault();
     }
 

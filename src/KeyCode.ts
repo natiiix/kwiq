@@ -1,6 +1,6 @@
 // Source: https://gist.github.com/kyranjamie/b9fca0c2cb82588bd492b6ee59ed239b
 
-export enum keyCodes {
+export enum KeyCode {
     BACKSPACE = 8,
     TAB = 9,
     ENTER = 13,
