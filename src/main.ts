@@ -1,12 +1,9 @@
+import { Interpreter } from "./interpreter";
 import { keyCodes } from "./keyCodes";
 
 const elemCode: HTMLTextAreaElement = document.getElementById("code") as HTMLTextAreaElement;
 const elemConsole: HTMLTextAreaElement = document.getElementById("console") as HTMLTextAreaElement;
 const elemSaveButton: HTMLElement = document.getElementById("buttonSave");
-
-function compile(code: string): string {
-    return "Hello World!\n" + code;
-}
 
 const keyStates: { [id: number]: boolean } = {};
 
@@ -23,14 +20,37 @@ function hasKeyCode(e: KeyboardEvent, keyCode: number): boolean {
     return getKeyCode(e) === keyCode;
 }
 
+function appendConsole(text: string): void {
+    if (elemConsole.value.length) {
+        elemConsole.value += "\n" + text;
+    } else {
+        elemConsole.value = text;
+    }
+
+    elemConsole.scrollTop = elemConsole.scrollHeight;
+}
+
+function interpretAsync(code: string, cbLog: (text: string) => void): void {
+    (new Promise((resolve: () => void, reject: () => void): void => {
+        appendConsole("Interpreting...");
+
+        try {
+            (new Interpreter()).interpret(code, cbLog);
+            resolve();
+        } catch {
+            reject();
+        }
+    }))
+        .then(() => cbLog("Done!"))
+        .catch(() => cbLog("Error!"));
+}
+
 elemCode.addEventListener("keydown", (e: KeyboardEvent): void => {
     if (hasKeyCode(e, keyCodes.F5)) {
         e.preventDefault();
 
         if (!isKeyDown(keyCodes.F5)) {
-            elemConsole.innerHTML = compile(elemCode.value);
-            elemConsole.scrollTop = elemConsole.scrollHeight;
-            console.log("Compiled!");
+            interpretAsync(elemCode.value, appendConsole);
         }
     } else if (hasKeyCode(e, keyCodes.KEY_S)) {
         if (e.ctrlKey) {
@@ -66,5 +86,4 @@ elemCode.addEventListener("keyup", (e: KeyboardEvent): void => {
 
 elemSaveButton.addEventListener("click", (e: MouseEvent) => {
     elemSaveButton.setAttribute("href", "data:;charset=utf-8," + encodeURIComponent(elemCode.value));
-    elemSaveButton.setAttribute("target", "_blank");
 });
