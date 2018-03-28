@@ -3,7 +3,7 @@ import { KeyCode } from "./KeyCode";
 
 const elemCode: HTMLTextAreaElement = document.getElementById("code") as HTMLTextAreaElement;
 const elemConsole: HTMLTextAreaElement = document.getElementById("console") as HTMLTextAreaElement;
-const elemSaveButton: HTMLElement = document.getElementById("buttonSave");
+const elemSaveButton: HTMLElement = document.getElementById("btnSave");
 
 const keyStates: { [id: number]: boolean } = {};
 let interpreterReady: boolean = true;
