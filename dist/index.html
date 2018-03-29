@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <title>kwiq</title>
+    <title>KWIQ</title>
 </head>
 
 <body>
@@ -11,23 +11,31 @@
         <div class="label">CODE</div>
 
         <div id="btnContainer">
-            <a id="btnSave" class="button" href="#" download="code.txt" target="_blank">SAVE</a>
+            <a id="btnSave" class="button" href="#" download="kwiq.txt">SAVE</a>
             <a id="btnRun" class="button">RUN</a>
         </div>
 
         <div class="label">CONSOLE</div>
     </div>
     <div id="box">
-        <textarea id="code" spellcheck="false" autofocus></textarea>
-        <textarea id="console" spellcheck="false" readonly></textarea>
+        <div id="code"></div>
+        <div id="splitter"></div>
+        <div id="consoleBox">
+            <textarea id="console" spellcheck="false" readonly></textarea>
+        </div>
     </div>
 </body>
 
 <style>
     :root {
         --top-bar-height: 3em;
-        --font-color: #333;
-        --bg-color: #CCC;
+        --bg-color: #AAA;
+        --font-color: #222;
+        --border-color: #555;
+        --btn-border-outer: 2px;
+        --btn-border-inner: 1px;
+
+        font-family: 'Courier New', Courier, monospace;
     }
 
     html,
@@ -43,6 +51,10 @@
     div,
     a,
     textarea {
+        margin: 0;
+        padding: 0;
+        border: 0;
+
         box-sizing: border-box;
     }
 
@@ -63,7 +75,7 @@
         font-size: calc(var(--top-bar-height) * 0.75);
         font-weight: bold;
 
-        color: #444;
+        color: var(--font-color);
     }
 
     #btnContainer {
@@ -79,13 +91,26 @@
         display: table-cell;
         vertical-align: middle;
 
-        border: 2pt #555 solid;
         background-color: #999;
         color: var(--font-color);
+        border-color: var(--border-color);
+        border-style: solid;
 
         text-decoration: none;
-        font-size: calc(var(--top-bar-height) * 0.6);
+        font-size: calc(var(--top-bar-height) * 0.55);
         font-weight: bold;
+
+        cursor: pointer;
+    }
+
+    #btnSave {
+        border-left-width: var(--btn-border-outer);
+        border-right-width: var(--btn-border-inner);
+    }
+
+    #btnRun {
+        border-left-width: var(--btn-border-inner);
+        border-right-width: var(--btn-border-outer);
     }
 
     #box {
@@ -95,23 +120,30 @@
         width: 100%;
     }
 
-    #code,
+    #code {
+        flex: 1;
+    }
+
+    #splitter {
+        flex: 0 0 calc(var(--btn-border-inner) * 2);
+        background-color: var(--border-color);
+    }
+
+    #consoleBox {
+        flex: 1;
+        display: flex;
+    }
+
     #console {
         flex: 1;
-        resize: none;
-
-        height: 100%;
-        margin: 0;
         padding: 0.5em;
-
-        border: 4pt var(--bg-color) solid;
+        resize: none;
 
         background-color: #1E1E1E;
         color: #D4D4D4;
-        font-family: 'Courier New', Courier, monospace;
     }
 </style>
 
-<script src="bundle.js"></script>
+<script src="bundle.js" type="text/javascript" charset="utf-8"></script>
 
 </html>
