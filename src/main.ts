@@ -65,37 +65,23 @@ function appendConsole(text: string): void {
     elemConsole.scrollTop = elemConsole.scrollHeight;
 }
 
-function interpretAsync(code: string, cbLog: (text: string) => void): void {
+function interpret(code: string, cbLog: (text: string) => void): void {
     if (!interpreterReady) {
         alert("Interpreter is currently busy!");
         return;
     }
 
-    const interpretation: Promise<void> = new Promise((resolve: () => void, reject: (err: Error) => void): void => {
-        appendConsole("Interpreting...");
-        interpreterReady = false;
+    cbLog("Interpreting...");
+    interpreterReady = false;
 
-        try {
-            (new Interpreter()).interpret(code, cbLog);
-            resolve();
-        } catch (err) {
-            reject(err);
-        }
-    });
+    (new Interpreter()).interpret(code, cbLog);
 
-    interpretation
-        .then(() => {
-            cbLog("Done!");
-            interpreterReady = true;
-        })
-        .catch((err: Error) => {
-            cbLog(`Error: ${err.name}\nMessage: ${err.message}\nStack Trace: ${err.stack}`);
-            interpreterReady = true;
-        });
+    interpreterReady = true;
+    cbLog("Done!");
 }
 
 function run(): void {
-    interpretAsync(getCode(), appendConsole);
+    interpret(getCode(), appendConsole);
 }
 
 document.addEventListener("keydown", (e: KeyboardEvent): void => {
